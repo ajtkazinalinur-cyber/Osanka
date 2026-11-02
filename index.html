@@ -287,7 +287,7 @@ section{margin-top:64px}
         <div class="sh"><h2>Стопы</h2><span class="mono mute" id="ftMeta"></span></div>
         <div class="pause">
           <div>
-            <p style="margin-bottom:8px">Осанка начинается снизу. Если свод стопы проседает, колени чаще уходят внутрь, а ноги быстрее устают. <b>Два главных упражнения для свода, босиком, 3–4 раза в неделю, около 4 минут.</b> Можно в дни основной тренировки или в дни отдыха.</p>
+            <p style="margin-bottom:8px">Осанка начинается снизу. Если свод стопы проседает, колени чаще уходят внутрь, а ноги быстрее устают. <b>Лёгкие упражнения босиком, почти все сидя, 3–4 раза в неделю.</b> Блок начинается примерно с 5 минут и каждые 8 раз добавляет одно новое упражнение, до 10 минут. Удобно делать перед телевизором или в дни отдыха.</p>
             <p class="mute" style="font-size:14px" id="ftType"></p>
           </div>
           <div style="display:flex;flex-direction:column;gap:14px">
@@ -469,14 +469,32 @@ const EX={
   what:"Будит сгибатели пальцев и мелкие мышцы стопы. Можно делать прямо за столом.",
   cues:["Пятка на полу, пальцы на краю полотенца","Сгибая пальцы, подтягивай полотенце к себе","Потом расправь пальцы как можно шире"],
   err:"Пятка не отрывается от пола, работают только пальцы."},
+ toe_yoga:{n:"Йога для пальцев",w:"сидя, босиком",type:"reps",hold:1,up:1,down:1,foot:true,mode:"yoga",
+  what:"Учит пальцы работать раздельно. Большой палец держит внутренний край стопы и равновесие, поэтому упражнение помогает, если стопа заваливается внутрь.",
+  cues:["Подними только большой палец, остальные прижаты к полу","Опусти его и подними четыре остальных, большой прижат","Одна смена туда и обратно — один повтор"],
+  err:"Сначала может совсем не получаться. Помогай рукой: через пару недель мозг научится."},
+ ball_roll:{n:"Мячик под стопой",w:"сидя, теннисный мяч или бутылка воды",type:"time",side:true,foot:true,mode:"roll",prop:"ball",
+  what:"Самомассаж подошвы. Снимает напряжение и готовит стопу к упражнениям, ощущается скорее как отдых. Хорошее начало блока.",
+  cues:["Поставь стопу на мяч","Медленно катай от пятки до подушечек","Где чувствительнее, задержись на пару секунд"],
+  err:"Дави настолько, чтобы было приятно, а не больно."},
+ calf_stretch:{n:"Растяжка икры у стены",w:"у стены",type:"time",side:true,focus:["l1s"],prop:"wall",
+  what:"Тугая икра тянет пятку и заставляет свод проседать при ходьбе. Растяжка возвращает голеностопу свободу и разгружает стопу.",
+  cues:["Руки на стене, задняя нога прямая","Пятка задней ноги прижата к полу","Подай таз вперёд до натяжения в икре"],
+  err:"Задняя стопа смотрит прямо вперёд, не разворачивай её наружу."},
  toe_raise:{n:"Подъём носков",w:"стоя спиной к стене",type:"reps",hold:1,foot:true,mode:"toes",
   what:"То самое упражнение из видео, только без резинки: передняя большеберцовая мышца. Свод почти не держит, но полезно для голеностопа, бега и прыжков.",
   cues:["Спина и ягодицы у стены, стопы на шаг впереди","Подними носки как можно выше","Опускай медленно, не шлёпая носком об пол"],
   err:"Колени не сгибай: движение только в голеностопе."}
 };
-const FEET=[["short_foot",2,6],["heel_ball",2,10]];
+/* foot block: every 8 completed blocks the level goes up and one new exercise joins */
+const FEET_LV=[
+ [["ball_roll",1,20],["short_foot",2,6],["heel_ball",1,10]],
+ [["ball_roll",1,20],["short_foot",2,7],["toe_yoga",1,6],["heel_ball",2,10]],
+ [["ball_roll",1,20],["short_foot",2,8],["toe_yoga",1,8],["towel_curl",1,10],["heel_ball",2,12]],
+ [["ball_roll",1,20],["short_foot",2,8],["toe_yoga",1,8],["towel_curl",1,12],["heel_ball",2,12],["calf_stretch",1,30]]
+];
 const feetLevel=()=>Math.min(3,Math.floor(((S.feet&&S.feet.n)||0)/8));
-function feetSession(){const lv=feetLevel();return{items:FEET.map(([id,sets,val])=>({id,sets,val:val+lv*(id==="short_foot"?2:3)}))}}
+function feetSession(){return{items:FEET_LV[feetLevel()].map(([id,sets,val])=>({id,sets,val}))}}
 const FTYPE={normal:"Тест: свод в норме — блок для силы и устойчивости",flexible:"Тест: гибкое плоскостопие — упражнения как раз для этого",rigid:"Тест: жёсткое плоскостопие — упражнения не вредят, но стоит показаться ортопеду"};
 const FRES={
  normal:["Свод на месте","Плоскостопия, похоже, нет. Блок для стоп всё равно полезен: сильные стопы — это устойчивость и меньше усталости ног."],
@@ -487,7 +505,7 @@ const FNOTES=[
  "Свод держат мышцы. Сегодня ты их разбудил.",
  "Стопы меняются медленнее спины: первые ощущения обычно через 3–4 недели.",
  "Вечером пройдись босиком, стопам это нравится.",
- "Четыре минуты несколько раз в неделю — это и есть рабочая доза."
+ "Несколько минут 3–4 раза в неделю — это и есть рабочая доза."
 ];
 const PHASES=[
  {n:"Пробуждение",sub:"нед. 1–3",list:[["towel",1,45],["chin_tuck",1,6],["doorway",2,20],["cat_cow",1,6],["bridge",1,8]],
@@ -582,6 +600,7 @@ const POSES={
  hip_flexor:[P({torso:-90,neck:-90,a1:[95,88],a2:[85,92],l1:[107,180,1],l2:[0,90,0]}),P({torso:-96,curve:-4,neck:-94,a1:[-98,-96],a2:[85,92],l1:[107,180,1],l2:[0,90,0]})],
  bird_dog:[P({...QUAD,neck:-15,curve:0}),P({...QUAD,neck:-15,curve:0,a1:[-12,-10],l2:[178,180,1]})],
  prone_y:[P({x:76,torso:0,neck:2,a1:[2,1],a2:[3,2],l1:[180,180,1],l2:[181,181,1]}),P({x:76,torso:-5,neck:-6,a1:[-16,-16],a2:[-14,-14],l1:[180,180,1],l2:[181,181,1]})],
+ calf_stretch:[P({torso:-78,neck:-82,a1:[2,-4],a2:[6,-2],l1:[104,104,0],l2:[78,104,0]}),P({torso:-73,neck:-77,a1:[4,-2],a2:[8,0],l1:[105,105,0],l2:[73,109,0]})],
  plank:[P({x:72,torso:-10,neck:-10,a1:[90,0],a2:[88,2],l1:[165,165,0],l2:[166,165,0]}),P({x:72,torso:-11,curve:1.5,neck:-11,a1:[90,0],a2:[88,2],l1:[165,165,0],l2:[166,165,0]})]
 };
 const lerp=(a,b,u)=>a+(b-a)*u;
@@ -655,7 +674,7 @@ function body(p){
   return S;
 }
 let COL={};
-function readCol(){const cs=getComputedStyle(document.documentElement);["ink","mute","line","card","paper","skin","tee","shorts","hair","hatch"].forEach(k=>COL[k]=cs.getPropertyValue("--"+k).trim()||"#888")}
+function readCol(){const cs=getComputedStyle(document.documentElement);["ink","mute","line","card","paper","skin","tee","shorts","hair","hatch","lime","sky","coral"].forEach(k=>COL[k]=cs.getPropertyValue("--"+k).trim()||"#888")}
 readCol();
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",readCol)}catch(e){}
 new MutationObserver(readCol).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
@@ -678,6 +697,7 @@ function drawFig(ctx,W,H,p,opt={}){
   ctx.strokeStyle=COL.line;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(6,G+.7);ctx.lineTo(234,G+.7);ctx.stroke();
   if(opt.prop==="door"){ctx.fillStyle=COL.line;ctx.fillRect(S.a1el[0]-10,G-162,7,162)}
   if(opt.prop==="towel"){const x=lerp(S.hip[0],S.armRoot[0],.7);ctx.fillStyle=COL.line;ctx.beginPath();ctx.ellipse(x,G-5.5,7,5.5,0,0,7);ctx.fill()}
+  if(opt.prop==="wall"){let mx=-1e9;["a1h","a2h"].forEach(k=>S[k].forEach(q=>mx=Math.max(mx,q[0])));ctx.fillStyle=COL.line;ctx.fillRect(mx-.5,G-172,8,172)}
   if(opt.prop==="pillow"){ctx.fillStyle=COL.line;ctx.beginPath();ctx.ellipse(S.l1k[0][0]-4.7,G-2.5,13,4,0,0,7);ctx.fill()}
   const fill=(k,c)=>{ctx.fillStyle=c;path(ctx,S[k]);ctx.fill()};
   const rim=(keys)=>{ctx.strokeStyle=COL.card;ctx.lineWidth=2.2;keys.forEach(k=>{path(ctx,S[k]);ctx.stroke()})};
@@ -699,7 +719,7 @@ function drawFig(ctx,W,H,p,opt={}){
   rim(["a1u","a1f","a1h","a1s"]);
   ["a1u","a1e","a1f","a1h"].forEach(k=>fill(k,COL.skin));fill("a1s",COL.tee);
   // working muscles: hatching
-  (opt.focus||[]).forEach(k=>{const map={neck:["neck"],a1u:["a1u","a1s"],l1t:["l1t","l1sh"],l2t:["l2t","l2sh"],torso:["tee"],glute:["glute"],chest:["chest"],upback:["upback"],core:["core"]};(map[k]||[]).forEach(q=>S[q]&&hatch(ctx,S[q],s))});
+  (opt.focus||[]).forEach(k=>{const map={neck:["neck"],a1u:["a1u","a1s"],l1t:["l1t","l1sh"],l2t:["l2t","l2sh"],l1s:["l1s"],torso:["tee"],glute:["glute"],chest:["chest"],upback:["upback"],core:["core"]};(map[k]||[]).forEach(q=>S[q]&&hatch(ctx,S[q],s))});
   // plumb line with landmarks: ear, shoulder, hip, ankle
   let off=null;
   if(opt.plumb){const ax=S.ankle[0]+2;ctx.save();ctx.setLineDash([2.4,3]);ctx.strokeStyle=COL.ink;ctx.lineWidth=.9;ctx.beginPath();ctx.moveTo(ax,4);ctx.lineTo(ax,G);ctx.stroke();ctx.restore();
@@ -721,43 +741,75 @@ function addFig(cv,fn){const f={cv,ctx:cv.getContext("2d"),fn,vis:true,t0:perfor
 function loop(now){FIGS.forEach(f=>{if(!f.cv.isConnected){FIGS.delete(f);return}if(!f.vis||f.cv.offsetParent===null&&f.cv.closest("[hidden]"))return;
   const [w,h]=fitCanvas(f.cv);f.fn(f.ctx,w,h,(now-f.t0)/1000)});requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-/* foot close-up, side view, toes to the right, ground at y=50 */
-const FOOT={shinB:[30,-30],ankB:[30,28],heelT:[23,36],heelB:[15,45],heelS:[22,50],archS:[34,50],archM:[56,47],ball:[82,50],toeB:[90,50],toeT:[110,49],toeU:[108,43],toeJ:[88,40],dors:[62,31],ankF:[46,22],shinF:[46,-30]};
-const FORDER=["shinB","ankB","heelT","heelB","heelS","archS","archM","ball","toeB","toeT","toeU","toeJ","dors","ankF","shinF"];
-function rot(p,c,a){a*=Math.PI/180;const dx=p[0]-c[0],dy=p[1]-c[1];return[c[0]+dx*Math.cos(a)-dy*Math.sin(a),c[1]+dx*Math.sin(a)+dy*Math.cos(a)]}
-function footPts(mode,u){
-  const P={};for(const k in FOOT)P[k]=FOOT[k].slice();
-  if(mode==="short"){P.archM=[56,47-6*u];P.dors=[62,31-1.5*u];P.ball=[80-2*u,50]}
-  const body=FORDER.filter(k=>!["shinB","shinF","toeB","toeT","toeU"].includes(k));
-  if(mode==="heel"){body.forEach(k=>P[k]=rot(P[k],[84,50],24*u))}
-  if(mode==="toes"){body.concat(["toeB","toeT","toeU"]).forEach(k=>P[k]=rot(P[k],[20,50],-15*u))}
-  if(mode==="towel"){const a=lerp(-16,24,u);["toeB","toeT","toeU"].forEach(k=>P[k]=rot(P[k],[88,46],a))}
-  P.shinB=[P.ankB[0],P.ankB[1]-58];P.shinF=[P.ankF[0],P.ankF[1]-52];
-  return P;
-}
-function drawFoot(ctx,W,H,mode,u){
+/* ================= foot close-up engine =================
+   Medial (inner) side view of the right foot, y-up world units, ground y=0.
+   q: a arch lift · th heel lift° · df toes-up (dorsiflexion)° · c toe curl · L big toe lift · Ls lesser toes lift ·
+      g towel gathered · ball roll position 0 heel … 1 forefoot · hb ball squeezed between heels */
+const rotAbout=(p,c,deg)=>{const a=deg*Math.PI/180,x=p[0]-c[0],y=p[1]-c[1];return[c[0]+x*Math.cos(a)-y*Math.sin(a),c[1]+x*Math.sin(a)+y*Math.cos(a)]};
+const lerp2=(p,q,u)=>[lerp(p[0],q[0],u),lerp(p[1],q[1],u)];
+const smooth=(e0,e1,x)=>{const t=Math.max(0,Math.min(1,(x-e0)/(e1-e0)));return t*t*(3-2*t)};
+const bump=x=>Math.sin(Math.PI*Math.max(0,Math.min(1,x)));
+function capsule(cs,rs){const L=[],R=[];for(let i=0;i<cs.length;i++){const a=cs[Math.max(0,i-1)],b=cs[Math.min(cs.length-1,i+1)],d=nz(sb(b,a)),n=[-d[1],d[0]];L.push(ad(cs[i],ml(n,rs[i])));R.push(sb(cs[i],ml(n,rs[i])))}
+  const z=cs.length-1,d=nz(sb(cs[z],cs[z-1])),n=[-d[1],d[0]],tip=[];for(let k=1;k<8;k++){const a=Math.PI/2-k*Math.PI/8;tip.push(ad(cs[z],ad(ml(n,Math.sin(a)*rs[z]),ml(d,Math.cos(a)*rs[z]))))}
+  return L.concat(tip,R.reverse())}
+function toeChain(B,a1,a2,l1,l2,rs){const c2=ad(B,ml(dir(a1),l1)),c3=ad(c2,ml(dir(a1+a2),l2));return{poly:capsule([B,c2,c3],rs),c2,c3,d:dir(a1+a2)}}
+function drawFootQ(ctx,W,H,q,opt={}){
   ctx.clearRect(0,0,W,H);
-  const s=Math.min(W/140,H/88),ox=(W-140*s)/2+4*s,oy=(H-88*s)/2+32*s;
-  ctx.save();ctx.translate(ox,oy);ctx.scale(s,s);ctx.lineJoin="round";ctx.lineCap="round";
-  const P=footPts(mode,u);
-  if(mode==="towel"){ctx.fillStyle=COL.line;ctx.fillRect(40,50,94,5);
-    const r=u*3;ctx.beginPath();ctx.ellipse(122-u*10,49.5,7+r,1+r,0,Math.PI,0);ctx.fill()}
-  ctx.strokeStyle=COL.line;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-4,50.7);ctx.lineTo(136,50.7);ctx.stroke();
-  if(mode==="heel"){ctx.globalAlpha=.6;ctx.fillStyle=COL.mute;ctx.beginPath();ctx.arc(P.heelT[0]+3,P.heelT[1]+2,6.5,0,7);ctx.fill();ctx.globalAlpha=1}
-  ctx.fillStyle=COL.skin;path(ctx,FORDER.map(k=>P[k]));ctx.fill();
-  const up=(p,d)=>[p[0],p[1]-d];
-  const reg={
-   short:[P.archS,P.archM,P.ball,up(P.ball,5),up(P.archM,5),up(P.archS,5)],
-   towel:[P.archS,P.archM,P.ball,P.toeB,P.toeT,up(P.toeB,5),up(P.archM,5),up(P.archS,5)],
-   heel:[P.shinB,P.ankB,[P.ankB[0]+7,P.ankB[1]-4],[P.shinB[0]+7,P.shinB[1]]],
-   toes:[P.shinF,[P.shinF[0]-7,P.shinF[1]],[P.ankF[0]-7,P.ankF[1]+2],P.ankF]
-  }[mode];
-  if(reg)hatch(ctx,reg,s);
-  if(mode==="short"){ctx.save();ctx.setLineDash([1.6,2]);ctx.strokeStyle=COL.ink;ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(P.archM[0],50);ctx.lineTo(P.archM[0],P.archM[1]);ctx.stroke();ctx.restore()}
+  const a=q.a||0,th=q.th||0,df=q.df||0,c=q.c||0,L=q.L||0,Ls=q.Ls||0,sh=4*a,r=17;
+  const s=Math.min(W/240,H/170);
+  ctx.save(); if(opt.mirror){ctx.translate(W,0);ctx.scale(-1,1)}
+  ctx.translate((W-240*s)/2+20*s,(H-170*s)/2+156*s); ctx.scale(s,-s);
+  ctx.lineJoin="round";ctx.lineCap="round";
+  ctx.strokeStyle=COL.line;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(-20,-.7);ctx.lineTo(220,-.7);ctx.stroke();
+  let xo=30,yo=0;
+  if(opt.prop==="roll"){const cx=lerp(30,98,q.ball||0);xo=92-cx;yo=2*r-1.5-8.5*Math.sin(Math.PI*Math.max(0,Math.min(1,(cx-30)/78)));
+    ctx.fillStyle=COL.lime;ctx.strokeStyle=COL.paper;ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(92,r,r,0,7);ctx.fill();
+    ctx.beginPath();ctx.arc(92-r*1.25,r,r*.9,-.75,.75);ctx.stroke();ctx.beginPath();ctx.arc(92+r*1.25,r,r*.9,Math.PI-.75,Math.PI+.75);ctx.stroke()}
+  if(opt.prop==="towel"){yo=2.6;const g=q.g||0,end=226-44*g,bx=176,bh=2.6+7*g*(.6+.4*c);
+    ctx.fillStyle=COL.sky;ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(118,0);ctx.lineTo(118,2.6);
+    for(let x=118;x<=end;x+=2){const b=bh*Math.exp(-Math.pow((x-bx)/(9+6*g),2));ctx.lineTo(x,2.6+b)}
+    ctx.lineTo(end,0);ctx.closePath();ctx.fill();ctx.globalAlpha=1}
+  ctx.translate(xo,yo);
+  const M0=[118-sh,7.5],HL=[14,0];
+  const R0=p=>rotAbout(rotAbout(p,M0,-th),HL,df);
+  const foot=[[2,26],[-1,14],[4,4],[16,0],[30,.8],[44,3+6*a],[62,8+10*a],[80,7.5+9*a],[96,3+3*a],[108-sh,0],[119-sh,1.5],
+    [121-sh,16],[101-sh*.8,25+3*a],[76,37+4*a],[54,51+2*a],[41,63],[13,63],[7,44]].map(R0);
+  const arch=[[33,1.4],[44,3+6*a],[62,8+10*a],[80,7.5+9*a],[100-sh,2.6+2*a],[100-sh,11+3*a],[80,17+9*a],[62,18+10*a],[44,12+6*a],[33,8]].map(R0);
+  const af=foot[15],ab=foot[16];
+  const fr=[],bk=[];for(let h=-16;h<=124;h+=8){fr.push([af[0]+2.4*Math.max(0,h)/100+2*smooth(14,70,h),af[1]+h]);bk.push([ab[0]+4*smooth(10,-16,h)-1-13*smooth(26,112,h),ab[1]+h])}
+  const shin=fr.concat(bk.slice().reverse());
+  const calf=bk.filter((p,i)=>i>=6).concat(bk.filter((p,i)=>i>=6).map((p,i)=>[lerp(p[0],fr[i+6][0],.45),p[1]]).reverse());
+  const tib=fr.filter((p,i)=>i>=3&&i<=14).concat(fr.filter((p,i)=>i>=3&&i<=14).map((p,i)=>[lerp(p[0],bk[i+3][0],.35),p[1]]).reverse());
+  const M=R0(M0);
+  const big=toeChain(M,-2+df+28*c+32*L,-2-80*c+8*L,18,14,[7.4,6.9,6.1]);
+  const les=toeChain(R0([M0[0]-5,8.6]),-3+df+26*c+34*Ls,-3-72*c+6*Ls,13,10,[6,5.4,4.7]);
+  const fill=(pts,col)=>{ctx.fillStyle=col;path(ctx,pts);ctx.fill()};
+  ctx.globalAlpha=.55;fill(les.poly,COL.skin);ctx.globalAlpha=1;
+  fill(foot,COL.skin);fill(shin,COL.skin);fill(big.poly,COL.skin);
+  ctx.globalAlpha=.16;fill(arch,COL.ink);
+  const mal=R0([27,56]);ctx.beginPath();ctx.ellipse(mal[0],mal[1],5.2,4.4,0,0,7);ctx.fill();ctx.globalAlpha=1;
+  const nb=ad(lerp2(big.c2,big.c3,.55),ml([-big.d[1],big.d[0]],4.2));ctx.strokeStyle=COL.paper;ctx.globalAlpha=.6;ctx.lineWidth=2.6;
+  ctx.beginPath();ctx.moveTo(nb[0]-big.d[0]*3,nb[1]-big.d[1]*3);ctx.lineTo(nb[0]+big.d[0]*3,nb[1]+big.d[1]*3);ctx.stroke();ctx.globalAlpha=1;
+  if(q.hb){const hp=R0([10,24]);ctx.globalAlpha=.72;ctx.fillStyle=COL.coral;ctx.beginPath();ctx.arc(hp[0],hp[1],10,0,7);ctx.fill();ctx.globalAlpha=1}
+  const F=new Set(opt.focus||[]);
+  if(F.has("arch"))hatch(ctx,arch,s);
+  if(F.has("calf"))hatch(ctx,calf,s);
+  if(F.has("tib"))hatch(ctx,tib,s);
+  if(F.has("toes")){hatch(ctx,big.poly,s);if(Ls>0||c>0)hatch(ctx,les.poly,s)}
   ctx.restore();
 }
+/* mode → pose and working muscles */
+const FMODE={
+ short:{f:(u)=>({a:u}),focus:["arch"]},
+ heel:{f:(u)=>({th:25*u,a:.3*u,hb:1}),focus:["calf","arch"]},
+ towel:{f:(u,t)=>({c:u,g:RM?.5:Math.min(1,t/25)}),focus:["toes","arch"],prop:"towel"},
+ toes:{f:(u)=>({df:16*u}),focus:["tib"]},
+ yoga:{f:(u,t,e)=>{if(RM)return{L:1};const T=tempo(e).cycle,ph=(t%T)/T;return ph<.5?{L:ease(bump(ph*2))}:{Ls:ease(bump((ph-.5)*2))}},focus:["toes"]},
+ roll:{f:(u,t)=>({ball:RM?.5:.5-.5*Math.cos(t*2*Math.PI/4)}),focus:["arch"],prop:"roll"}
+};
+function drawFoot(ctx,W,H,mode,u,t=0,e=null,mirror=false){const m=FMODE[mode];drawFootQ(ctx,W,H,m.f(u,t,e),{focus:m.focus,prop:m.prop,mirror})}
 function exDraw(id){const e=EX[id];
-  if(e.foot)return(ctx,w,h,t)=>drawFoot(ctx,w,h,e.mode,e.type==="time"?holdU(t):repU(e,t));
+  if(e.foot)return(ctx,w,h,t,mirror)=>drawFoot(ctx,w,h,e.mode,e.type==="time"?holdU(t):repU(e,t),t,e,mirror);
   const [A,B]=POSES[id];return(ctx,w,h,t,mirror)=>drawFig(ctx,w,h,mix(A,B,e.type==="time"?holdU(t):repU(e,t)),{focus:e.focus,prop:e.prop,mirror})}
 const exFig=exDraw;
 
@@ -771,7 +823,7 @@ addFig($("heroCv"),(ctx,w,h,t)=>{const off=drawFig(ctx,w,h,heroPose(heroP,t),{pl
 function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c}
 const trn=n=>plural(n,"тренировку","тренировки","тренировок");
 function fmtD(d){const [y,m,dd]=d.split("-");return dd+"."+m+"."+y.slice(2)}
-function needs(items){const s=new Set();items.forEach(it=>{const e=EX[it.id];if(e.prop==="door")s.add("дверной проём");if(e.prop==="towel")s.add("полотенце");if(e.prop==="pillow")s.add("подушка");if(e.prop==="ball")s.add("мячик");if(/коврик|полу|кровати/.test(e.w))s.add("коврик или кровать")});return[...s].join(", ")||"ничего"}
+function needs(items){const s=new Set();items.forEach(it=>{const e=EX[it.id];if(e.prop==="door")s.add("дверной проём");if(e.prop==="towel")s.add("полотенце");if(e.prop==="pillow")s.add("подушка");if(e.prop==="ball")s.add("мячик");if(e.prop==="wall")s.add("стена");if(/коврик|полу|кровати/.test(e.w))s.add("коврик или кровать")});return[...s].join(", ")||"ничего"}
 
 function render(){
   const done=S.done,ses=sessionFor(done),ph=PHASES[ses.ph],finished=done>=TOTAL;
@@ -800,7 +852,7 @@ function render(){
   $("rxList").innerHTML=ses.items.map(rowHtml).join("");
   const fs=feetSession(),fmin=estMin(fs.items),fdays=S.feet.days||[],ft=fdays.includes(today());
   $("ftList").innerHTML=fs.items.map(rowHtml).join("");
-  $("ftMeta").textContent=`${S.feet.n||0} сделано · уровень ${feetLevel()+1} из 4`;
+  $("ftMeta").textContent=`${S.feet.n||0} сделано · уровень ${feetLevel()+1} из 4`+(feetLevel()<3?` · новое упражнение через ${8-(S.feet.n||0)%8}`:"");
   $("ftMin").textContent="≈ "+fmin+" мин";
   $("goFeet").querySelector("span").textContent=ft?"Сегодня сделано · ещё раз":"Начать блок для стоп";
   $("goFeet").className="btn "+(ft?"ghost":"primary");
@@ -894,7 +946,7 @@ function finish(){
     $("finish").hidden=false;document.body.style.overflow="hidden";
     $("fTag").textContent="Блок для стоп выполнен";$("fBig").textContent="✓";
     $("fHead").textContent=`Стопы · тренировка ${S.feet.n}`;
-    $("fNote").textContent=S.feet.n%8===0&&S.feet.n<=24?"Новый уровень: со следующего раза повторов станет чуть больше.":FNOTES[S.feet.n%FNOTES.length];
+    $("fNote").textContent=S.feet.n%8===0&&S.feet.n<=24?`Новый уровень: со следующего раза в блоке появится «${EX[FEET_LV[feetLevel()].find(([id])=>!FEET_LV[feetLevel()-1].some(([j])=>j===id))[0]].n}».`:FNOTES[S.feet.n%FNOTES.length];
     const fig=addFig($("fCv"),(ctx,w,h,t)=>drawFoot(ctx,w,h,"short",RM?1:Math.min(1,Math.max(0,(t-.4)/1.8))));
     $("fCtl").innerHTML=`<button class="btn primary" id="fOk">Готово</button>`;
     $("fOk").onclick=()=>{$("finish").hidden=true;document.body.style.overflow="";FIGS.delete(fig);render()};
@@ -935,6 +987,7 @@ $("addPause").onclick=()=>{const t=today();if(S.pause.d!==t)S.pause={d:t,n:0};S.
 $("sheet").addEventListener("click",e=>{if(e.target.id==="sheet")$("sheet").hidden=true});
 route();render();
 </script>
+
 
 </body>
 </html>
